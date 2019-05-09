@@ -43,7 +43,7 @@ namespace koigoe_over_rap
         {
             if (!File.Exists("path.ini"))
             {
-                File.Create("path.ini").Close();
+                File.WriteAllText("path.ini","\n\n");
             }
             return File.ReadAllLines("path.ini").Take(2).ToArray();
         }
@@ -94,7 +94,7 @@ namespace koigoe_over_rap
         {
             if (!File.Exists("OutputDevice.ini"))
             {
-                File.Create("OutputDevice.ini").Close();
+                File.WriteAllText("OutputDevice.ini","\n");
             }
 
             return File.ReadAllText("OutputDevice.ini");
