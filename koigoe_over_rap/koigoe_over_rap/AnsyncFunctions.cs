@@ -165,7 +165,7 @@ namespace koigoe_over_rap
 
                 db2 = CalcDB(db1);
 
-                if (Math.Abs(db1 - db2) < 5 && db2 > -40)
+                if (Math.Abs(db1 - db2) < 5 && db2 > -40 && date.form1.checkBox1.Checked)
                 {
                     ++eq_time;
                 }
@@ -174,7 +174,7 @@ namespace koigoe_over_rap
                     eq_time = 0;
                 }
 
-                if (db2 < -80)
+                if (db2 < -80 && date.form1.checkBox2.Checked)
                 {
                     ++stop_time;
                 }
@@ -183,14 +183,14 @@ namespace koigoe_over_rap
                     stop_time = 0;
                 }
 
-                if (eq_time > 30 && date.form1.checkBox1.Checked)
+                if (eq_time > 30)
                 {
                     MessageBox.Show("音声が出力されておりません。EQバグの可能性があるため再起動します。", "注意", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     date.cont.KillKoigoe();
                     date.cont.RunApp(date.path);
                 }
 
-                if (stop_time > 30 && date.form1.checkBox2.Checked)
+                if (stop_time > 30)
                 {
                     ButtonTextCustomizableMessageBox msbox = new ButtonTextCustomizableMessageBox();
                     msbox.ButtonText.Cancel = "無視する";
