@@ -92,7 +92,7 @@ namespace koigoe_over_rap
             {
                 date.pn.Start();
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {   //これが無くてもどうにかはなるのでエラー通知だけしておいてとばす
                 MessageBox.Show("koigoe_setのパスが間違っています", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 goto Skip;

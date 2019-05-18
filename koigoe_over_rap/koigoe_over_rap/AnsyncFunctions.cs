@@ -23,7 +23,6 @@ namespace koigoe_over_rap
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         public Audio audio { get; private set; }
-        private OverlayForm overlayForm = new OverlayForm();
         private Dates date;
 
         public AnsyncFunctions(Dates dates)
@@ -127,11 +126,13 @@ namespace koigoe_over_rap
                     }
                 }
 
+                Trace.WriteLine(date.ingame);
+
                 if (date.ingame == true)
                 {
-
-                    overlayForm.Invoke((MethodInvoker)(() => overlayForm.TopMost = true));
-
+                    
+                    date.overlayForm.Invoke((MethodInvoker)(() => date.overlayForm.TopMost = true));
+                    
                 }
 
                 Thread.Sleep(1000);

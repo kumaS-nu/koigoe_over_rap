@@ -12,6 +12,8 @@ namespace koigoe_over_rap
     partial class Form1 : Form
     {
         private Dates date;
+        private int mouse_x;
+        private int mouse_y;
         public Form1() { }
    
         public Form1(Dates dates)
@@ -76,6 +78,7 @@ namespace koigoe_over_rap
             {
                 label.Click += new EventHandler(GroupBoxClick);
             }
+
         }
 
 
@@ -172,6 +175,7 @@ namespace koigoe_over_rap
                     if (File.Exists(textBox.Text))
                     {
                         date.path[1] = textBox.Text;
+                        date.pn.StartInfo.FileName = date.path[1];
                     }
                     else
                     {
@@ -196,7 +200,7 @@ namespace koigoe_over_rap
             {
                 p.Start();
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {   //これが無くてもどうにかはなるのでエラー通知だけしておいてとばす
                 MessageBox.Show("koigoe_setのパスが間違っています", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -219,33 +223,49 @@ namespace koigoe_over_rap
                     date.eq_set[0] = (uint)(int)senderComboBox.SelectedValue;
                     Trace.WriteLine(date.voc_num);
                     if (date.voc_num == 1) {
-                        StartProcess(date.cont.argv_hWnd[1].ToString());
-                        Thread.Sleep(200);
-                        date.cont.SetEQSetting(date.eq_set[0]);
+                        try
+                        {
+                            StartProcess(date.cont.argv_hWnd[1].ToString());
+                            Thread.Sleep(200);
+                            date.cont.SetEQSetting(date.eq_set[0]);
+                        }
+                        catch (Exception) { }
                     } break;
 
                 case "EQset2":
                     date.eq_set[1] = (uint)(int)senderComboBox.SelectedValue;
                     if (date.voc_num == 2) {
-                        StartProcess(date.cont.argv_hWnd[1].ToString());
-                        Thread.Sleep(200);
-                        date.cont.SetEQSetting(date.eq_set[1]);
+                        try
+                        {
+                            StartProcess(date.cont.argv_hWnd[1].ToString());
+                            Thread.Sleep(200);
+                            date.cont.SetEQSetting(date.eq_set[1]);
+                        }
+                        catch (Exception) { }
                     } break;
 
                 case "EQset3":
                     date.eq_set[2] = (uint)(int)senderComboBox.SelectedValue;
                     if (date.voc_num == 3) {
-                        StartProcess(date.cont.argv_hWnd[1].ToString());
-                        Thread.Sleep(200);
-                        date.cont.SetEQSetting(date.eq_set[2]);
+                        try
+                        {
+                            StartProcess(date.cont.argv_hWnd[1].ToString());
+                            Thread.Sleep(200);
+                            date.cont.SetEQSetting(date.eq_set[2]);
+                        }
+                        catch (Exception) { }
                     } break;
 
                 case "EQset4":
                     date.eq_set[3] = (uint)(int)senderComboBox.SelectedValue;
                     if (date.voc_num == 4) {
-                        StartProcess(date.cont.argv_hWnd[1].ToString());
-                        Thread.Sleep(200);
-                        date.cont.SetEQSetting(date.eq_set[3]);
+                        try
+                        {
+                            StartProcess(date.cont.argv_hWnd[1].ToString());
+                            Thread.Sleep(200);
+                            date.cont.SetEQSetting(date.eq_set[3]);
+                        }
+                        catch (Exception) { }
                     } break;
             }
 
@@ -265,9 +285,13 @@ namespace koigoe_over_rap
             date.outPutDevNum = (uint)(int)senderComboBox.SelectedValue;
 
             date.cont.Stop();
-            StartProcess(date.cont.argv_hWnd[0].ToString());
-            Thread.Sleep(200);
-            date.cont.SetWaveStream(date.outPutDevNum);
+            try
+            {
+                StartProcess(date.cont.argv_hWnd[0].ToString());
+                Thread.Sleep(200);
+                date.cont.SetWaveStream(date.outPutDevNum);
+            }
+            catch (Exception) { }
             Thread.Sleep(100);
             date.cont.Restart();
 

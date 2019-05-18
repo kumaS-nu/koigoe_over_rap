@@ -163,11 +163,15 @@ namespace koigoe_over_rap
         public void ChangeVoc(Process pn,uint[] eq_set,OverlayForm fm)
         {
             SendClick(hWnd[date.voc_num]);
-
-            pn.Start();
+            try
+            {
+                pn.Start();
+            }
+            catch (Exception) { goto pass; }
             while (!pn.HasExited) { }
             Thread.Sleep(200);
             SetEQSetting(eq_set[date.voc_num]);
+            pass:
             fm.Change_num(date.voc_num + 1);
             if (++date.voc_num > 3)
             {
