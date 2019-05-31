@@ -16,7 +16,7 @@ namespace koigoe_over_rap
         [STAThread]
         static void Main()
         {
-         
+
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(Program_UnhandledException);
             KoigoeControler.SetProcessDPIAware();
@@ -64,7 +64,7 @@ namespace koigoe_over_rap
                         {
                             Process.GetProcessesByName("voicemeeterpro")[0].PriorityClass = ProcessPriorityClass.RealTime;
                         }
-                        catch (IndexOutOfRangeException) {  }
+                        catch (IndexOutOfRangeException) { }
 
                         break;
                     }
@@ -98,17 +98,17 @@ namespace koigoe_over_rap
                 goto Skip;
             }
             while (!date.pn.HasExited) { }
-                Thread.Sleep(200);  //これが無いと早すぎてうまくいかない
-                controler.SetWaveStream(date.outPutDevNum);
+            Thread.Sleep(200);  //これが無いと早すぎてうまくいかない
+            controler.SetWaveStream(date.outPutDevNum);
 
-                Thread.Sleep(100); //これも
+            Thread.Sleep(100); //これも
 
             date.pn.StartInfo.Arguments = controler.argv_hWnd[1].ToString();
             date.pn.Start();
 
-                while (!date.pn.HasExited) { }
-                Thread.Sleep(200); //これも
-                IntPtr close = controler.SetEQSetting(date.eq_set[0]);
+            while (!date.pn.HasExited) { }
+            Thread.Sleep(200); //これも
+            IntPtr close = controler.SetEQSetting(date.eq_set[0]);
             Skip:
 
 
@@ -116,16 +116,18 @@ namespace koigoe_over_rap
 
             controler.Restart();
 
+            Process overlay = new Process();
+            overlay.StartInfo.FileName = "D:/programfolder/Program files(made by me)/koigoe/koigoe_over_rap/Ovarlay/bin/Release/Ovarlay.exe";
+            overlay.StartInfo.Arguments = "1 false Red";
+            overlay.StartInfo.UseShellExecute = false;
+            overlay.StartInfo.RedirectStandardInput = true;
+            overlay.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
+            overlay.Start();
+            overlay.WaitForInputIdle();
             
-            
-            date.overlayForm = new OverlayForm(date);
-            while (date.overlayForm.TopMost == false)
-            {
-                date.overlayForm.TopMost = true;
-            }
-
-            date.overlayForm.Show();
+            date.overlay = overlay;
+            date.layptr = KoigoeControler.FindWindow(null, "Overlay");
 
             fm2 = new Form2(date);
             date.form2 = fm2;
@@ -139,6 +141,7 @@ namespace koigoe_over_rap
             date.form1 = fm1;
             Application.Run(fm1);
             controler.Stop();
+            date.overlay.Kill();
         }
 
         public static void ShortcatChange(Dates date)

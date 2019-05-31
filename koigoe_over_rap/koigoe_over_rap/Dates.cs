@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace koigoe_over_rap
 {
@@ -16,13 +17,15 @@ namespace koigoe_over_rap
         /// <param name="path">         パス関連のいろいろ                             </param>
         /// <param name="reset_interval">リセットの間隔を入れてる                      </param>
         public uint[] eq_set = new uint[4];
-        public OverlayForm overlayForm = new OverlayForm();
+        public Process overlay;
+        public IntPtr layptr;
         public uint outPutDevNum = new uint();
         public Process pn;
         public string[] path = new string[2];
         public TimeSpan reset_interval;
         public Keys[] shortcat = new Keys[4];
         public bool ingame = false;
+        public bool laygame = false;
         public int voc_num = 1;
         public bool eq = false;
         public List<string> gameprocess = new List<string>();

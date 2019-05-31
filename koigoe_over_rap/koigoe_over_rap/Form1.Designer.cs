@@ -567,8 +567,6 @@ namespace koigoe_over_rap
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox2.Font = new System.Drawing.Font("ふい字Ｐ", 9.900001F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.checkBox2.Location = new System.Drawing.Point(49, 117);
             this.checkBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);

@@ -78,7 +78,6 @@ namespace koigoe_over_rap
             {
                 label.Click += new EventHandler(GroupBoxClick);
             }
-
         }
 
 

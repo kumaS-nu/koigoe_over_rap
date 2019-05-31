@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,18 +32,18 @@ namespace koigoe_over_rap
         public IntPtr stop_hWnd;
         public IntPtr[] argv_hWnd = new IntPtr[2];
         public IntPtr[] hWnd = new IntPtr[4];
-        
+
         /// <param name="mother_window">恋声のウィンドウのハンドラ                     </param>
         public Process mother_window { get; private set; }
 
         private Dates date;
-        
+
 
         [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, uint lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, uint lParam);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
         public static extern bool SetProcessDPIAware();
@@ -58,11 +57,11 @@ namespace koigoe_over_rap
             date.gameprocess = ReadWritePropatysToFile.ReadGameProcess();
         }
 
-    /// <summary>
-    /// クリックしたということを送る
-    /// </summary>
-    /// <param name="intPtr">送り先のハンドラ</param>
-    public void SendClick(IntPtr intPtr)
+        /// <summary>
+        /// クリックしたということを送る
+        /// </summary>
+        /// <param name="intPtr">送り先のハンドラ</param>
+        public void SendClick(IntPtr intPtr)
         {
             SendMessage(intPtr, WM_LBUTTONDOWN, MK_LBUTTON, 0x000A000A);
             SendMessage(intPtr, WM_LBUTTONUP, 0x00000000, 0x000A000A);
@@ -75,11 +74,12 @@ namespace koigoe_over_rap
         private void FindTargetButton(Window top)
         {
             var all = SearchWindow.GetAllChildWindows(top, new List<Window>());
-           
-            for (int i = 1; i < 5; i++) {
+
+            for (int i = 1; i < 5; i++)
+            {
                 hWnd[i - 1] = all.Where(x => x.ClassName == "Button" && (x.Title == i.ToString())).First().hWnd;
             }
-            
+
             start_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "LIVE")).First().hWnd;
             stop_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "STOP")).First().hWnd;
             argv_hWnd[0] = all.Where(x => x.ClassName == "Button" && (x.Title == "設定")).First().hWnd;
@@ -95,18 +95,18 @@ namespace koigoe_over_rap
 
             var c_window = FindWindow("#32770", "Sound Effect (Graphic Equalizer & Reverb)");
             var top = SearchWindow.GetWindow(c_window);
-            
+
             var all = SearchWindow.GetAllChildWindows(top, new List<Window>());
             if (num != 0)
             {
                 IntPtr num_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == num.ToString())).First().hWnd;
                 SendClick(num_hWnd);
-                
+
             }
 
             IntPtr eq_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "EQを有効にする")).First().hWnd;
-            
-            if(date.eq == (num == 0))
+
+            if (date.eq == (num == 0))
             {
                 SendClick(eq_hWnd);
                 date.eq = !date.eq;
@@ -128,7 +128,7 @@ namespace koigoe_over_rap
 
             var all = SearchWindow.GetAllChildWindows(top, new List<Window>());
             var temp = all.Where(x => x.ClassName == "ComboBox").ToArray();
-            foreach(var t in temp)
+            foreach (var t in temp)
             {
                 Trace.WriteLine(t);
             }
@@ -137,12 +137,12 @@ namespace koigoe_over_rap
 
             SendMessage(combo_hWnd, CB_SETCURSEL, out_idx, 0);
             SendClick(ok_hWnd);
-            
+
         }
 
-        
-        
- 
+
+
+
         /// <summary>
         /// （落とさないで）リセットする
         /// </summary>
@@ -160,7 +160,7 @@ namespace koigoe_over_rap
         /// <summary>
         /// ボイチェンのセットを変更
         /// </summary>
-        public void ChangeVoc(Process pn,uint[] eq_set,OverlayForm fm)
+        public void ChangeVoc(Process pn, uint[] eq_set)
         {
             SendClick(hWnd[date.voc_num]);
             try
@@ -172,11 +172,17 @@ namespace koigoe_over_rap
             Thread.Sleep(200);
             SetEQSetting(eq_set[date.voc_num]);
             pass:
-            fm.Change_num(date.voc_num + 1);
             if (++date.voc_num > 3)
             {
                 date.voc_num = 0;
             }
+            
+            if(date.layptr == new IntPtr(0))
+            {
+                date.layptr = FindWindow(null, "Overlay");
+            }
+            Trace.WriteLine((uint)date.layptr);
+            SendMessage(date.layptr, 0x400, 0x0, (uint)date.voc_num);
         }
 
         /// <summary>
@@ -184,7 +190,7 @@ namespace koigoe_over_rap
         /// </summary>
         public void ChangeVocDec()
         {
-            if(date.voc_num < 1)
+            if (date.voc_num < 1)
             {
                 date.voc_num += 4;
             }
@@ -192,7 +198,7 @@ namespace koigoe_over_rap
             --date.voc_num;
         }
 
-        
+
 
         /// <summary>
         /// 恋声を落とす
@@ -224,18 +230,18 @@ namespace koigoe_over_rap
         /// </summary>
         public void RunApp(string[] path)
         {
-           
+
 
             Process koigoe = new Process();
             koigoe.StartInfo.FileName = path[0];
-            
+
             koigoe.Start();
             koigoe.WaitForInputIdle();
 
             Application.Restart();
         }
 
-        
+
 
         /// <summary>
         /// ハンドラーをセット
@@ -247,7 +253,7 @@ namespace koigoe_over_rap
             var main_window_handler = mother_window.MainWindowHandle;
             // 対象のボタンを探す
             FindTargetButton(SearchWindow.GetWindow(main_window_handler));
-        }        
+        }
 
         public enum ProcessDPIAwareness
         {
@@ -325,7 +331,7 @@ namespace koigoe_over_rap
     {
         private KeyboardHook keyHook;
         private bool isWork = false;
-        private bool invalid = false;
+        public bool invalid = false;
         public bool keysetting = false;
         private Dates date;
 
@@ -344,17 +350,17 @@ namespace koigoe_over_rap
 
         private void KeyHook_Up(object sender, KeyboardHookedEventArgs e)
         {
-            
+
             if (!isWork && !keysetting)
             {
-                
+
                 if (!invalid)
                 {
-                    
+
                     if (e.KeyCode == date.shortcat[0] && e.UpDown == KeyboardUpDown.Up)
                     {
                         isWork = true;
-                        date.cont.ChangeVoc(date.pn, date.eq_set, date.overlayForm);
+                        date.cont.ChangeVoc(date.pn, date.eq_set);
                         isWork = false;
                     }
 
@@ -377,17 +383,17 @@ namespace koigoe_over_rap
                     }
                 }
 
-                if(e.KeyCode == date.shortcat[3] && e.UpDown == KeyboardUpDown.Up)
+                if (e.KeyCode == date.shortcat[3] && e.UpDown == KeyboardUpDown.Up)
                 {
                     isWork = true;
                     invalid = !invalid;
-                    if(invalid == true)
+                    if (invalid == true)
                     {
-                        date.overlayForm.ChangeColor(System.Drawing.Color.Blue);
+                        KoigoeControler.SendMessage(date.layptr, 0x400, 0x1, 0x0);
                     }
                     else
                     {
-                        date.overlayForm.ChangeColor(System.Drawing.Color.Red);
+                        KoigoeControler.SendMessage(date.layptr, 0x400, 0x1, 0x1);
                     }
                     isWork = false;
                 }
