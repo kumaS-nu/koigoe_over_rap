@@ -22,17 +22,6 @@ namespace koigoe_over_rap
         [DllImport("user32.dll")]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, int uFlags);
-
-        const int SWP_NOSIZE = 0x0001;
-        const int SWP_NOMOVE = 0x0002;
-        const int SWP_SHOWWINDOW = 0x0040;
-        const int HWND_TOPMOST = -1;
-        const int HWND_TOP = 0;
-        const int HWND_NOTOPMOST = -2;
-
         public Audio audio { get; private set; }
         private Dates date;
 
@@ -123,7 +112,6 @@ namespace koigoe_over_rap
                 GetWindowThreadProcessId(hWnd, out int id);
                 process = Process.GetProcessById(id);
                 name = process.ProcessName;
-                
 
                 foreach (var game in date.gameprocess)
                 {
@@ -163,12 +151,16 @@ namespace koigoe_over_rap
                             date.overlay.StartInfo.Arguments = date.voc_num.ToString() + " false Red";
                         }
                     }
-
+                    
                     date.overlay.Start();
                     date.overlay.WaitForInputIdle();
+                    Thread.Sleep(10000);
                     date.layptr = KoigoeControler.FindWindow(null, "Overlay");
-                }
 
+                    
+                }
+                Trace.WriteLine(Screen.PrimaryScreen.Bounds + Screen.PrimaryScreen.DeviceName);
+                Trace.WriteLine(name);
                 Thread.Sleep(1000);
             }
         }

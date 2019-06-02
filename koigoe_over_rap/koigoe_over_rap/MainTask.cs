@@ -120,7 +120,7 @@ namespace koigoe_over_rap
             overlay.StartInfo.FileName = "D:/programfolder/Program files(made by me)/koigoe/koigoe_over_rap/Ovarlay/bin/Release/Ovarlay.exe";
             overlay.StartInfo.Arguments = "1 false Red";
             overlay.StartInfo.UseShellExecute = false;
-            overlay.StartInfo.RedirectStandardInput = true;
+            overlay.StartInfo.CreateNoWindow = true;
             overlay.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             overlay.Start();
