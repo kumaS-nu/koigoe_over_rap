@@ -22,6 +22,27 @@ namespace koigoe_over_rap
         [DllImport("user32.dll")]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
+
+        [DllImport("user32.dll")]
+        public static extern uint GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern uint SetWindowLong(IntPtr hWnd,int nIndex,uint dwLong );
+
+        private const int HWND_TOPMOST = -1;
+        private const int SWP_NOMOVE = 0x0002;
+        private const int SWP_SHOWWINDOW = 0x0040;
+        private const int SWP_NOSIZE = 0x0001;
+        private const int SWP_NOOWNERZORDER = 0x0200;
+
+        public const int GWL_STYLE = -16;
+        private const int GWL_EXSTYLE = -20;
+
+        private const uint WS_POPUP = 0x80000000;
+        private const uint WS_EX_TOPMOST = 0x8;
+
         public Audio audio { get; private set; }
         private Dates date;
 
@@ -104,9 +125,11 @@ namespace koigoe_over_rap
             IntPtr hWnd;
             string name;
             Process process;
+            Process gamep = new Process();
 
             while (true)
             {
+                
                 hWnd = GetForegroundWindow();
 
                 GetWindowThreadProcessId(hWnd, out int id);
@@ -124,9 +147,9 @@ namespace koigoe_over_rap
                     {
                         date.ingame = false;
                     }
-                }
+                }                
 
-                if (date.ingame != date.laygame)
+                if (date.ingame == true)
                 {
                     date.overlay.Kill();
                     if(date.ingame == true)
@@ -152,15 +175,21 @@ namespace koigoe_over_rap
                         }
                     }
                     
-                    date.overlay.Start();
-                    date.overlay.WaitForInputIdle();
-                    Thread.Sleep(10000);
-                    date.layptr = KoigoeControler.FindWindow(null, "Overlay");
-
+                    var temp1 = GetWindowLong(process.MainWindowHandle, GWL_STYLE);
+                    var temp2 = GetWindowLong(process.MainWindowHandle, GWL_EXSTYLE);
+                    Trace.WriteLine("window style =" + temp1.ToString("x"));
+                    Trace.WriteLine("window Exstyle = " + temp2.ToString("x"));
+                    temp1 |= WS_POPUP;
+                    temp2 &= WS_EX_TOPMOST;
+                    SetWindowLong(process.MainWindowHandle, GWL_STYLE, temp1);
+                    SetWindowLong(process.MainWindowHandle, GWL_EXSTYLE, temp2);
+                    
+                    date.overlayForm.Invoke((MethodInvoker)(() => {
+                        date.overlayForm.TopMost = true;
+                    }));
                     
                 }
-                Trace.WriteLine(Screen.PrimaryScreen.Bounds + Screen.PrimaryScreen.DeviceName);
-                Trace.WriteLine(name);
+
                 Thread.Sleep(1000);
             }
         }

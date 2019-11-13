@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -66,6 +67,12 @@ namespace koigoe_over_rap
                         }
                         catch (IndexOutOfRangeException) { }
 
+                        try
+                        {
+                            temp.WaitForInputIdle();
+                        }
+                        catch (InvalidOperationException) { }
+
                         break;
                     }
 
@@ -79,7 +86,6 @@ namespace koigoe_over_rap
                 }
 
             }
-            Thread.Sleep(100);
 
             KoigoeControler controler = new KoigoeControler(date);
             date.cont = controler;
@@ -97,18 +103,28 @@ namespace koigoe_over_rap
                 MessageBox.Show("koigoe_setのパスが間違っています", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 goto Skip;
             }
-            while (!date.pn.HasExited) { }
-            Thread.Sleep(200);  //これが無いと早すぎてうまくいかない
-            controler.SetWaveStream(date.outPutDevNum);
 
-            Thread.Sleep(100); //これも
+            date.pn.WaitForExit();
+            
+            IntPtr ok_button = controler.SetWaveStream(date.outPutDevNum);
+            while (SearchWindow.IsWindow(ok_button))
+            {
+                controler.SendClick(ok_button);
+                Thread.Sleep(100);
+            } 
 
             date.pn.StartInfo.Arguments = controler.argv_hWnd[1].ToString();
             date.pn.Start();
 
-            while (!date.pn.HasExited) { }
-            Thread.Sleep(200); //これも
-            IntPtr close = controler.SetEQSetting(date.eq_set[0]);
+            date.pn.WaitForExit();
+            
+            IntPtr c_window = controler.SetEQSetting(date.eq_set[0]);
+            while (AnsyncFunctions.GetWindowLong(c_window,AnsyncFunctions.GWL_STYLE) % 0x20000000 / 0x10000000 == 1)
+            {
+                controler.SendClick(c_window);
+                Thread.Sleep(100);
+            }
+
             Skip:
 
 
@@ -123,11 +139,15 @@ namespace koigoe_over_rap
             overlay.StartInfo.CreateNoWindow = true;
             overlay.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
-            overlay.Start();
-            overlay.WaitForInputIdle();
-            
-            date.overlay = overlay;
-            date.layptr = KoigoeControler.FindWindow(null, "Overlay");
+            OverlayForm overlay = new OverlayForm(date);
+            date.overlayForm = overlay;
+
+            while (date.overlayForm.TopMost == false)
+            {
+                date.overlayForm.TopMost = true;
+            }
+
+            date.overlayForm.Show();
 
             fm2 = new Form2(date);
             date.form2 = fm2;
@@ -135,10 +155,10 @@ namespace koigoe_over_rap
 
             AnsyncFunctions ansync = new AnsyncFunctions(date);
             date.ansync = ansync;
-            ansync.RunAll();
 
             Form1 fm1 = new Form1(date);
             date.form1 = fm1;
+            ansync.RunAll();
             Application.Run(fm1);
             controler.Stop();
             date.overlay.Kill();

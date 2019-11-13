@@ -94,6 +94,11 @@ namespace koigoe_over_rap
         {
 
             var c_window = FindWindow("#32770", "Sound Effect (Graphic Equalizer & Reverb)");
+            while (AnsyncFunctions.GetWindowLong(c_window, AnsyncFunctions.GWL_STYLE) % 0x20000000 / 0x10000000 == 0)
+            {
+                Thread.Sleep(100);
+                c_window = FindWindow("#32770", "Sound Effect (Graphic Equalizer & Reverb)");
+            }
             var top = SearchWindow.GetWindow(c_window);
 
             var all = SearchWindow.GetAllChildWindows(top, new List<Window>());
@@ -102,6 +107,7 @@ namespace koigoe_over_rap
                 IntPtr num_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == num.ToString())).First().hWnd;
                 SendClick(num_hWnd);
 
+                Thread.Sleep(1);
             }
 
             IntPtr eq_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "EQを有効にする")).First().hWnd;
@@ -109,21 +115,27 @@ namespace koigoe_over_rap
             if (date.eq == (num == 0))
             {
                 SendClick(eq_hWnd);
+                Thread.Sleep(1);
                 date.eq = !date.eq;
             }
             IntPtr close_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "閉じる")).First().hWnd;
 
             SendClick(close_hWnd);
-
-            return close_hWnd;
+            Thread.Sleep(1);
+            return c_window;
         }
 
         /// <summary>
         /// 音声の出力先を変更
         /// </summary>
-        public void SetWaveStream(uint out_idx)
+        public IntPtr SetWaveStream(uint out_idx)
         {
             var c_window = FindWindow("#32770", "恋声の設定");
+            while(c_window == (IntPtr)0)
+            {
+                Thread.Sleep(100);
+                c_window = FindWindow("#32770", "恋声の設定");
+            }
             var top = SearchWindow.GetWindow(c_window);
 
             var all = SearchWindow.GetAllChildWindows(top, new List<Window>());
@@ -136,12 +148,12 @@ namespace koigoe_over_rap
             IntPtr ok_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "OK")).First().hWnd;
 
             SendMessage(combo_hWnd, CB_SETCURSEL, out_idx, 0);
+            Thread.Sleep(1);
             SendClick(ok_hWnd);
 
+            Thread.Sleep(1);
+            return ok_hWnd;
         }
-
-
-
 
         /// <summary>
         /// （落とさないで）リセットする
@@ -160,7 +172,7 @@ namespace koigoe_over_rap
         /// <summary>
         /// ボイチェンのセットを変更
         /// </summary>
-        public void ChangeVoc(Process pn, uint[] eq_set)
+        public void ChangeVoc(Process pn, uint[] eq_set, OverlayForm fm)
         {
             SendClick(hWnd[date.voc_num]);
             try
@@ -273,6 +285,9 @@ namespace koigoe_over_rap
 
     static class SearchWindow
     {
+        [DllImport("user32.dll")]
+        public static extern bool IsWindow(IntPtr hWnd);
+
         [DllImport("user32.dll")]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
