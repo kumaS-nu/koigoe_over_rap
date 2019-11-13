@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -65,7 +66,11 @@ namespace koigoe_over_rap
                             Process.GetProcessesByName("voicemeeterpro")[0].PriorityClass = ProcessPriorityClass.RealTime;
                         }
                         catch (IndexOutOfRangeException) { }
-
+                        try
+                        {
+                            temp.WaitForInputIdle();
+                        }
+                        catch (InvalidOperationException) { }
                         break;
                     }
 
@@ -79,7 +84,6 @@ namespace koigoe_over_rap
                 }
 
             }
-            Thread.Sleep(100);
 
             KoigoeControler controler = new KoigoeControler(date);
             date.cont = controler;
@@ -97,19 +101,27 @@ namespace koigoe_over_rap
                 MessageBox.Show("koigoe_setのパスが間違っています", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 goto Skip;
             }
-            while (!date.pn.HasExited) { }
-            Thread.Sleep(200);  //これが無いと早すぎてうまくいかない
-            controler.SetWaveStream(date.outPutDevNum);
-
-            Thread.Sleep(100); //これも
+            date.pn.WaitForExit();
+            
+            IntPtr ok_button = controler.SetWaveStream(date.outPutDevNum);
+            while (SearchWindow.IsWindow(ok_button))
+            {
+                controler.SendClick(ok_button);
+                Thread.Sleep(100);
+            } 
 
             date.pn.StartInfo.Arguments = controler.argv_hWnd[1].ToString();
             date.pn.Start();
 
-            while (!date.pn.HasExited) { }
-            Thread.Sleep(200); //これも
-            IntPtr close = controler.SetEQSetting(date.eq_set[0]);
-            Thread.Sleep(200); //これも
+            date.pn.WaitForExit();
+            
+            IntPtr c_window = controler.SetEQSetting(date.eq_set[0]);
+            while (AnsyncFunctions.GetWindowLong(c_window,AnsyncFunctions.GWL_STYLE) % 0x20000000 / 0x10000000 == 1)
+            {
+                controler.SendClick(c_window);
+                Thread.Sleep(100);
+            }
+
             Skip:
 
 

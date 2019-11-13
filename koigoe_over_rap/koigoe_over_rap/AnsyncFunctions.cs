@@ -26,7 +26,7 @@ namespace koigoe_over_rap
         private static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
 
         [DllImport("user32.dll")]
-        private static extern uint GetWindowLong(IntPtr hWnd, int nIndex);
+        public static extern uint GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
         private static extern uint SetWindowLong(IntPtr hWnd,int nIndex,uint dwLong );
@@ -37,7 +37,7 @@ namespace koigoe_over_rap
         private const int SWP_NOSIZE = 0x0001;
         private const int SWP_NOOWNERZORDER = 0x0200;
 
-        private const int GWL_STYLE = -16;
+        public const int GWL_STYLE = -16;
         private const int GWL_EXSTYLE = -20;
 
         private const uint WS_POPUP = 0x80000000;
