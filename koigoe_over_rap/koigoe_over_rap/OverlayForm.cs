@@ -26,10 +26,11 @@ namespace koigoe_over_rap
             {
                 name = "Arial";
             }
+            ShowInTaskbar = false;
             //フォームの境界線をなくす
             FormBorderStyle = FormBorderStyle.None;
             //大きさを適当に変更
-            Size = new Size(60, 120);
+            Size = new Size(512, 512);
             //透明を指定する
             TransparencyKey = BackColor;
             Opacity = 0.7;
