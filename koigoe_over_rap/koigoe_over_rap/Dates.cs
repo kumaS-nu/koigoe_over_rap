@@ -19,6 +19,7 @@ namespace koigoe_over_rap
         public OverlayForm overlayForm = new OverlayForm();
         public uint outPutDevNum = new uint();
         public Process pn;
+        public bool[] output_check = new bool[2];
         public string[] path = new string[2];
         public TimeSpan reset_interval;
         public Keys[] shortcat = new Keys[4];

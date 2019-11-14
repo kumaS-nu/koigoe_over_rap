@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>koigoe overlap</title>
+    <style>
+        body {
+            background-color: rgb(255, 245, 245)
+        }
+        
+        div.box {
+            font-family: "ふい字ｐ";
+            font-size: 120%;
+            letter-spacing: 0.03em;
+            width: 40em;
+            margin-right: auto;
+            margin-left: auto;
+            padding: 1em 2em;
+            border: solid medium silver;
+            background-color: white;
+        }
+        
+        div.box2 {
+            width: 25em;
+            margin-left: 2em;
+            margin-right: auto;
+            padding: 0.5em 0.5em;
+            border: solid medium silver;
+            background-color: rgb(245, 245, 245);
+        }
+        
+        p {
+            text-indent: 1em;
+            line-height: 1.2em;
+        }
+        
+        li {
+            line-height: 1.5em;
+        }
+        
+        p.A {
+            text-indent: 0;
+            line-height: 1.2em;
+        }
+        
+        a.inner {
+            text-decoration: none;
+        }
+        
+        .dashed {
+            border: thin dashed gray
+        }
+        
+        .small {
+            font-size: 80%
+        }
+        
+        .blue {
+            color: blue;
+        }
+        
+        b.red {
+            font-size: 160%;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h1>概要</h1>
+        <hr class="dashed">
+        <p>このソフトは、恋声の簡略化、自動化、機能追加を行うソフトです。原理としては、このソフトから恋声に命令を出しているという感じです。</p>
+        <br>
+        <hr>
+        <h2>主な機能</h2>
+        <hr class="dashed">
+        <ul>
+            <li>起動時、恋声を自動的にセッティング</li>
+            <li>入出力設定の文字列が恋声より長く保存できるので必ず自動設定できる</li>
+            <li>ショートカットキーを設定し、声のセット・イコライザー変更。リセット・再起動</li>
+            <li>恋声が落ちた際に自動復帰</li>
+            <li>一定時間で恋声をリセット（不安定化防止）</li>
+            <li>音の出力を監視。出力が壊れた際恋声の再起動</li>
+            <li>オーバーレイで現在の声のセット表示</li>
+        </ul>
+        <br>
+        <hr>
+        <h1>中身</h1>
+        <hr class="dashed">
+        <ul>
+            <li>koigoe_over_rap.exe　・・・　本体。typoしてごめんなさい。</li>
+            <li>koigoe_set.exe　・・・　サブモジュール。単体では意味ない。</li>
+            <li>Readme　・・・　使い方とか入ってる。</li>
+            <li>Font　・・・　このアプリで使ってるフォントが入ってる。</li>
+        </ul>
+        <br>
+        <hr>
+        <h1>使い方</h1>
+        <hr class="dashed">
+        <ol>
+            <li>恋声を起動</li>
+            <li>koigoe over rapを起動（初回のみ警告が出ますが後で設定します）</li>
+            <li>画面のものを自由に設定（それぞれについては各部説明にて説明）</li>
+            <li>完了</li>
+        </ol>
+        <br>
+        <hr>
+        <h1>注意</h1>
+        <hr class="dashed">
+        <ul>
+            <li>フォントをインストール（任意）</li>
+            <li>恋声が起動していないとそもそも立ち上がりません。</li>
+            <li>ショートカットキーが発動するタイミングはキーを放した瞬間です。</li>
+            <li>koigoe_over_rapを起動する前に恋声のイコライザーのオン・オフを操作すると、ずれます。</li>
+        </ul>
+        <br>
+        <hr>
+        <h1>各部説明</h1>
+        <hr class="dashed">
+        <p>画面のスクショ・各設定項目がある設定ファイル名を青色で表示します。</p>
+        <img src="Image.png" width="100%" style="border: 2px black solid;">
+        <ol>
+            <li>オーバーレイで表示される部分。現在の恋声のセットが表示。赤のときショートカット有効。青のときショートカット無効。</li><br>
+            <li>このアプリを使っていると、時々バグがおき、おかしな音が出力されます。ここにチェックを入れると、そのバグを検知し再起動してくれます。
+                <span class="blue"></span>
+            </li><br>
+            <li>ここにチェックを入れると、恋声から音声が出力されていないときに警告を出してくれます。ホワイトノイズを除去していて、何もしゃべらないと反応するときがあるので注意。
+                <span class="blue"></span>
+            </li><br>
+            <li>恋声をリセットする間隔。長時間恋声を稼働させると不安定になる対策。0の場合リセットしない。
+                <span class="blue">reset_interval.ini</span>
+            </li><br>
+            <li>恋声の声のセットとイコライザーのセットの対応。固定の数字は声のセット。無効、1～4の選択
+                <span class="blue">eq_set.ini</span>
+            </li><br>
+            <li>ショートカットキーの割り当て。文字をクリックし、設定するキーを押すことによって変更。複数キーの組み合わせ不可。
+                <span class="blue">Shortcat_keys.ini</span>
+                <ul>
+                    <li>変更　・・・　次の声のセットに変更。1→2→3→4→1…</li>
+                    <li>リセット　・・・　声の変換をリセット。出力が不安定になった時用。</li>
+                    <li>再起動　・・・　恋声を再起動。恋声がおかしくなった時用。</li>
+                    <li>テキスト　・・・　テキストモード切り替え。テキストモード時はこのショートカット以外は効かない・オーバーレイ青になる。</li>
+                </ul>
+            </li><br>
+            <li>入力・出力はどうするかという設定。
+                <ul>
+                    <li>出力先　・・・　恋声はどのスピーカーに出力するか。
+                        <span class="blue">output_dev_num.ini</span>
+                    </li>
+                    <li>入力機器　・・・　このアプリへはどのマイクから入力するか。出力のチェックに使用。
+                        <span class="blue">OutputDevice.ini</span>
+                    </li>
+                </ul>
+            </li><br>
+            <li>恋声はどこにあるかということ。ドラッグ&ドロップで設定可能。
+                <span class="blue">path.ini(1行目)</span>
+            </li><br>
+            <li>koigoe_set.exe はどこにあるかということ。ドラッグ&ドロップで設定可能。
+                <span class="blue">path.ini(2行目)</span>
+            </li><br>
+            <li>ゲームとして記憶する実行ファイルの入力欄。ここでゲームと記憶されると、オーバーレイがゲーム中も表示されるかもしれない。ドラッグ&ドロップで入力可。文字を入れた後、Enter を押すと登録。
+                <span class="blue">GameProcess.ini</span>
+            </li><br>
+            <li>ゲームとして記憶したものの解除。左のところで選び、右の削除ボタンで解除。
+                <span class="blue">GameProcess.ini</span>
+            </li>
+        </ol>
+    </div>
+</body>
+
+</html>

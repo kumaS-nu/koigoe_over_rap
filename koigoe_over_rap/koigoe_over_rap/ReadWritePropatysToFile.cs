@@ -140,5 +140,26 @@ namespace koigoe_over_rap
         {
             File.WriteAllLines("GameProcess.ini", gameProcess);
         }
+
+        public static bool[] ReadOutputCheck()
+        {
+            if (!File.Exists("Output_check.ini"))
+            {
+                File.WriteAllText("Output_check.ini", "true\nfalse");
+            }
+
+            bool[] result = new bool[2];
+            string[] temp = File.ReadAllLines("Output_check.ini");
+            bool.TryParse(temp[0], out result[0]);
+            bool.TryParse(temp[1], out result[1]);
+
+            return result;
+        }
+
+        public static void WriteOutputCheck(bool[] output_check)
+        {
+            string[] write = { output_check[0].ToString(), output_check[1].ToString() };
+            File.WriteAllLines("Output_check.ini", write);
+        }
     }
 }

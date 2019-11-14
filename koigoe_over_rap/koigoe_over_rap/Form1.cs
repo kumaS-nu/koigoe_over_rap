@@ -21,6 +21,11 @@ namespace koigoe_over_rap
             InitializeComponent();
             date = dates;
             //初期設定（データバインドとかイベント設定とか）
+            checkBox1.Checked = date.output_check[0];
+            checkBox1.CheckedChanged += new EventHandler(ChangeCheckBox);
+            checkBox2.Checked = date.output_check[1];
+            checkBox2.CheckedChanged += new EventHandler(ChangeCheckBox);
+
             ComboBox[] boxes = { EQset1, EQset2, EQset3, EQset4 };
             for(int i = 0; i < 4; i++) {
                 SetComboData(boxes[i], new Dictionary<string, int> { { "無効", 0 }, { "1", 1 }, { "2", 2 }, { "3", 3 }, { "4", 4 } });
@@ -79,6 +84,26 @@ namespace koigoe_over_rap
                 label.Click += new EventHandler(GroupBoxClick);
             }
 
+        }
+
+        /// <summary>
+        /// チェックボックスが変わったときの
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChangeCheckBox(object sender, EventArgs e)
+        {
+            CheckBox check = (CheckBox)sender;
+            switch (check.Name) {
+                case "checkBox1":
+                    date.output_check[0] = check.Checked;
+                    ReadWritePropatysToFile.WriteOutputCheck(date.output_check);
+                    break;
+                case "checkBox2":
+                    date.output_check[1] = check.Checked;
+                    ReadWritePropatysToFile.WriteOutputCheck(date.output_check);
+                    break;
+            }
         }
 
 

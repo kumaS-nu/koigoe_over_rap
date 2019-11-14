@@ -38,7 +38,9 @@ namespace koigoe_over_rap
 
                 eq_set = ReadWritePropatysToFile.ReadEQ(),
 
-                shortcat = ReadWritePropatysToFile.ReadShortcatKeys()
+                shortcat = ReadWritePropatysToFile.ReadShortcatKeys(),
+
+                output_check = ReadWritePropatysToFile.ReadOutputCheck()
             };
             //ここまで
 
