@@ -52,17 +52,8 @@
             border: thin dashed gray
         }
         
-        .small {
-            font-size: 80%
-        }
-        
         .blue {
             color: blue;
-        }
-        
-        b.red {
-            font-size: 160%;
-            color: red;
         }
     </style>
 </head>
@@ -124,10 +115,10 @@
         <ol>
             <li>オーバーレイで表示される部分。現在の恋声のセットが表示。赤のときショートカット有効。青のときショートカット無効。</li><br>
             <li>このアプリを使っていると、時々バグがおき、おかしな音が出力されます。ここにチェックを入れると、そのバグを検知し再起動してくれます。
-                <span class="blue"></span>
+                <span class="blue">Output_check.ini（1行目）</span>
             </li><br>
             <li>ここにチェックを入れると、恋声から音声が出力されていないときに警告を出してくれます。ホワイトノイズを除去していて、何もしゃべらないと反応するときがあるので注意。
-                <span class="blue"></span>
+                <span class="blue">Output_check.ini（2行目）</span>
             </li><br>
             <li>恋声をリセットする間隔。長時間恋声を稼働させると不安定になる対策。0の場合リセットしない。
                 <span class="blue">reset_interval.ini</span>
