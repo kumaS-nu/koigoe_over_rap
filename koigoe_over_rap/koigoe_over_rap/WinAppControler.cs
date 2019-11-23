@@ -103,6 +103,19 @@ namespace koigoe_over_rap
             var top = SearchWindow.GetWindow(c_window);
 
             var all = SearchWindow.GetAllChildWindows(top, new List<Window>());
+
+            int err = 0;
+            while (!all.Where(x => x.ClassName == "Button" && (x.Title == "EQを有効にする")).Any() && !all.Where(x => x.ClassName == "Button" && (x.Title == "閉じる")).Any() && !all.Where(x => x.ClassName == "Button" && (x.Title == num.ToString())).Any())
+            {
+                err++;
+                if(err > 100)
+                {
+                    throw new KeyNotFoundException("操作対象が見つかりませんでした。");
+                }
+                Thread.Sleep(100);
+                all = SearchWindow.GetAllChildWindows(top, new List<Window>());
+            }
+
             if (num != 0)
             {
                 IntPtr num_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == num.ToString())).First().hWnd;
@@ -144,6 +157,19 @@ namespace koigoe_over_rap
             {
                 Trace.WriteLine(t);
             }
+
+            int err = 0;
+            while(all.Where(x => x.ClassName == "ComboBox" && (x.Title == null)).Count() < 3 || !all.Where(x => x.ClassName == "Button" && (x.Title == "OK")).Any())
+            {
+                err++;
+                if (err > 100)
+                {
+                    throw new KeyNotFoundException("操作対象が見つかりませんでした。");
+                }
+                Thread.Sleep(100);
+                all = SearchWindow.GetAllChildWindows(top, new List<Window>());
+            }
+
             IntPtr combo_hWnd = all.Where(x => x.ClassName == "ComboBox" && (x.Title == null)).Skip(2).First().hWnd;
             IntPtr ok_hWnd = all.Where(x => x.ClassName == "Button" && (x.Title == "OK")).First().hWnd;
 
