@@ -105,24 +105,14 @@ namespace koigoe_over_rap
             }
             date.pn.WaitForExit();
             
-            IntPtr ok_button = controler.SetWaveStream(date.outPutDevNum);
-            while (SearchWindow.IsWindow(ok_button))
-            {
-                controler.SendClick(ok_button);
-                Thread.Sleep(100);
-            } 
+            controler.SetWaveStream(date.outPutDevNum);
 
             date.pn.StartInfo.Arguments = controler.argv_hWnd[1].ToString();
             date.pn.Start();
 
             date.pn.WaitForExit();
-            
-            IntPtr c_window = controler.SetEQSetting(date.eq_set[0]);
-            while (AnsyncFunctions.GetWindowLong(c_window,AnsyncFunctions.GWL_STYLE) % 0x20000000 / 0x10000000 == 1)
-            {
-                controler.SendClick(c_window);
-                Thread.Sleep(100);
-            }
+
+            controler.SetEQSetting(date.eq_set[0]);
 
             Skip:
 

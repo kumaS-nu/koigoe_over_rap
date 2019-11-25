@@ -91,7 +91,7 @@ namespace koigoe_over_rap
         /// イコライザーの設定を変更
         /// </summary>
         /// <param name="num">何番目の設定を使うか</param>
-        public IntPtr SetEQSetting(uint num)
+        public void SetEQSetting(uint num)
         {
 
             var c_window = FindWindow("#32770", "Sound Effect (Graphic Equalizer & Reverb)");
@@ -135,13 +135,18 @@ namespace koigoe_over_rap
 
             SendClick(close_hWnd);
             Thread.Sleep(1);
-            return c_window;
+
+            while (AnsyncFunctions.GetWindowLong(c_window, AnsyncFunctions.GWL_STYLE) % 0x20000000 / 0x10000000 == 1)
+            {
+                SendClick(close_hWnd);
+                Thread.Sleep(100);
+            }
         }
 
         /// <summary>
         /// 音声の出力先を変更
         /// </summary>
-        public IntPtr SetWaveStream(uint out_idx)
+        public void SetWaveStream(uint out_idx)
         {
             var c_window = FindWindow("#32770", "恋声の設定");
             while(c_window == (IntPtr)0)
@@ -177,7 +182,12 @@ namespace koigoe_over_rap
             Thread.Sleep(1);
             SendClick(ok_hWnd);
             Thread.Sleep(1);
-            return ok_hWnd;
+
+            while (SearchWindow.IsWindow(ok_hWnd))
+            {
+                SendClick(ok_hWnd);
+                Thread.Sleep(100);
+            }
         }
 
 
